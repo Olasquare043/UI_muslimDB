@@ -1,0 +1,63 @@
+ .body {
+     font-family: "Avenir Next W01",
+     "Avenir Next W00",
+     "Avenir Next",
+     "Helvetica Neue",
+     Helvetica,
+     Arial,
+     sans-serif;
+     background-color: rgb(210, 223, 243);
+     display: flex;
+     min-height: 100vh;
+     flex-direction: column;
+ }
+/* html {
+    background: url(../img/bg.png) no-repeat center center fixed;
+    background-size: cover;
+    height: 100%;
+} */
+
+ 
+
+ main {
+     flex: 1 0 auto;
+ }
+ .navbar{
+     background-color:rgb(185, 193, 214) ;
+ }
+ .sticky-footer {
+     padding: 10px;
+     position: bottom;
+     font-family: Arial, Helvetica, sans-serif;
+     font-size: 17px;
+     background-color: rgb(103, 124, 241);
+     }
+ .group-wraper {
+ font-weight: normal;
+ font-style: normal;
+ font-size: 15px;
+ line-height: 1.42857;
+ border-top: none;
+ box-sizing: border-box;
+ border-color:blue;
+ width: inherit;
+ background: inherit;
+ position: relative;
+ margin: 25px 0 25px 0px;
+ padding: 0;
+ }
+ .cardheader{
+     background-color: rgb(68, 81, 199);
+ }
+ .footer{
+     background-attachment: primary;
+ }
+ @media screen and (max-width: 1024px) {
+
+     /* Specific to this particular image */
+     img.bg {
+         left: 50%;
+         margin-left: -512px;
+         /* 50% */
+     }
+    }
