@@ -6,7 +6,7 @@ require_once "includes/header.php";
 require_once "includes/navbar.php";
 
 if (isset($_POST['submit'])) {
-    if (isset($_POST['surname'], $_POST['othernames'], $_POST['email']) && !empty($_POST['surname']) && !empty($_POST['othernames']) && !empty($_POST['email'])) {
+    if (isset($_POST['surname'],$_POST['othernames'],$_POST['email']) && !empty($_POST['surname']) && !empty($_POST['othernames']) && !empty($_POST['email'])) {
         $surname = trim($_POST['surname']);
         $othernames = trim($_POST['othernames']);
         $email = trim($_POST['email']);
@@ -23,62 +23,66 @@ if (isset($_POST['submit'])) {
         $nok_phone = trim($_POST['nok_phone']);
         $nok_address = trim($_POST['nok_address']);
         //image manipultion
-       $img_name=$_FILES["img"]["name"];
-       $dir="/uploads";
-       $target_file= $dir.basename($_FILES["img"]["name"]);
-       $extension=strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
+        $img_name=$_FILES["img"]["name"];
+        $dir="uploads";
+        $target_file= $dir.basename($_FILES["img"]["name"]);
+        // $temp_name=$_FILES["img"]["temp_name"];
+        $extension=strtolower(pathinfo($target_file,PATHINFO_EXTENSION));
         $img_ok=1;
-        if($extension !== "jpg" && $extension != "jpeg" && $extension != "gif" && $extension != "png"){
+        if($extension != "jpg" && $extension != "jpeg" && $extension != "gif" && $extension != "png"){
         $img_ok=0;
-        $errors_img[]="Invalid image you can only upload(jpeg,jpg,gif and gif)";
+        $errors[]="Invalid image you can only upload(jpeg,jpg,gif and gif)";
         }
-        if ($_FILES["img"]["SIZE"]>50000){
+        if ($_FILES["img"]["size"]>500000){
             $img_ok=0;
-
-            $errors_img[]="image size is too large..must not exceed 5mb";
+            $errors[]="image size is too large..must not exceed 500kb";
             }
         if (filter_var($email, FILTER_VALIDATE_EMAIL)){
-            $sql = 'select * from members where email = :email';
-            $stmt = $pdo->prepare($sql);
-            $p = ['email' => $email];
-            $stmt->execute($p);
-
-            if ($stmt->rowCount() == 0) {
-                $sql = "insert into members (surname, othernames,email,gender,dob,telephone1,telephone2,employment_status,
-                occupation,state,localgv,img,nok_name,relationship,nok_phone,nok_address) values(:fname,:lname,:email,:gender,
-                :dob,:telephone1,:telephone2,:employment_status,:occupation,:state,:lga,:img,:nok_name,:relationship,:nok_phone,:nok_address)";
-
-                try {
-                    $handle = $pdo->prepare($sql);
-                    $params = [
-                        ':fname' => $surname,
-                        ':lname' => $othernames,
-                        ':email' => $email,
-                        ':gender' => $gender,
-                        ':dob' => $surname,
-                        ':telephone1' => $telephone1,
-                        ':telephone2' => $telephone2,
-                        ':employment_status' => $employment_status,
-                        ':occupation' => $occupation,
-                        ':state' => $state,
-                        ':lga' => $lga,
-                        ':img' => $img,
-                        ':nok_name' => $nok_name,
-                        ':relationship' => $relationship,
-                        ':nok_phone' => $nok_phone,
-                        ':nok_address' => $nok_address
-                        // ':pass' => $hashPassword
-                    ];
-
-                    $handle->execute($params);
-
-                    $success = 'User has been created successfully';
-                } catch (PDOException $e) {
-                    $errors[] = $e->getMessage();
+            if ($img_ok==1 ||  move_uploaded_file($_FILES["img"]["tmp_name"],$target_file)){
+                $sql = 'select * from memberss where email = :email';
+                $stmt = $pdo->prepare($sql);
+                $p = [':email' => $email];
+                $stmt->execute($p);
+                if ($stmt->rowCount() == 0) {
+                    $sql = "insert into memberss (surname, othernames,email,gender,dob,telephone1,telephone2,employment_status,
+                    occupation,state,localgv,img,nok_name,relationship,nok_phone,nok_address) values(:fname,:lname,:email,:gender,
+                    :dob,:telephone1,:telephone2,:employment_status,:occupation,:state,:lga,:img,:nok_name,:relationship,:nok_phone,:nok_address)";
+    
+                    try {
+                        $handle = $pdo->prepare($sql);
+                        $params = [
+                            ':fname' => $surname,
+                            ':lname' => $othernames,
+                            ':email' => $email,
+                            ':gender' => $gender,
+                            ':dob' => $surname,
+                            ':telephone1' => $telephone1,
+                            ':telephone2' => $telephone2,
+                            ':employment_status' => $employment_status,
+                            ':occupation' => $occupation,
+                            ':state' => $state,
+                            ':lga' => $lga,
+                            ':img' => $img_name,
+                            ':nok_name' => $nok_name,
+                            ':relationship' => $relationship,
+                            ':nok_phone' => $nok_phone,
+                            ':nok_address' => $nok_address
+                            // ':pass' => $hashPassword
+                        ];
+    
+                        $handle->execute($params);
+    
+                        $success = 'User has been created successfully';
+                    } catch (PDOException $e) {
+                        $errors[] = $e->getMessage();
+                    }
+                } else {
+                    $errors[] = 'Email address already registered';
                 }
-            } else {
-                $errors[] = 'Email address already registered';
+            }else{
+                $errors[]="image failed to upload";
             }
+            
         } else {
             $errors[] = "Email address is not valid";
         }
