@@ -1,2 +1,2 @@
 # UI_muslimDB using PHP
-web form for gathering and registering muslim individual in the university of Ibadan in a single database
+A PHP web form for gathering and registering muslim individuals in the university of Ibadan in a single database
